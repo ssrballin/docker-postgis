@@ -14,7 +14,6 @@ RUN apt-get -y update
 #RUN apt-get -y upgrade
 
 #-------------Application Specific Stuff ----------------------------------------------------
-
 # We add postgis as well to prevent build errors (that we dont see on local builds)
 # on docker hub e.g.
 # The following packages have unmet dependencies:
@@ -23,14 +22,10 @@ RUN apt-get install -y postgresql-client-9.5 postgresql-common postgresql-9.5 po
 # Open port 5432 so linked containers can see them
 EXPOSE 5432
 
-# Run any additional tasks here that are too tedious to put in
-# this dockerfile directly.
-ADD setup.sh /setup.sh
-RUN chmod 0755 /setup.sh
-RUN /setup.sh
-
 # We will run any commands in this when the container starts
 ADD start-postgis.sh /start-postgis.sh
-RUN chmod 0755 /start-postgis.sh
+RUN chmod 0777 /start-postgis.sh
+
+WORKDIR /snapshot
 
 CMD /start-postgis.sh

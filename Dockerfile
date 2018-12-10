@@ -7,7 +7,6 @@ RUN sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main"
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 
 #-------------Application Specific Stuff ----------------------------------------------------
-
 # We add postgis as well to prevent build errors (that we dont see on local builds)
 # on docker hub e.g.
 # The following packages have unmet dependencies:
@@ -17,14 +16,9 @@ RUN apt -y update; apt install -y postgresql-client-9.6 postgresql-common postgr
 EXPOSE 5432
 
 # We will run any commands in this when the container starts
-ADD env-data.sh /
-ADD docker-entrypoint.sh /
-ADD setup-conf.sh /
-ADD setup-database.sh /
-ADD setup-pg_hba.sh /
-ADD setup-replication.sh /
-ADD setup-ssl.sh /
-ADD setup-user.sh /
-RUN chmod +x /*.sh
+ADD start-postgis.sh /start-postgis.sh
+RUN chmod 0777 /start-postgis.sh
 
-ENTRYPOINT /docker-entrypoint.sh
+WORKDIR /snapshot
+
+CMD /start-postgis.sh
